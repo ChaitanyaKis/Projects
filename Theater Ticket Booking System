@@ -1,0 +1,84 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class TheaterTicketBooking {
+    public static void main(String[] args) {
+        new BookingUI();
+    }
+}
+
+class BookingUI extends JFrame implements ActionListener {
+    private JLabel label;
+    private JComboBox<String> movieDropdown;
+    private JTextField ticketField;
+    private JButton bookButton, deleteButton;
+    private JTextArea receiptArea;
+
+    public BookingUI() {
+        setTitle("Theater Ticket Booking");
+        setSize(400, 350);
+        setLayout(new FlowLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        label = new JLabel("Select Movie:");
+        String[] movies = {"Interstellar", "Inception", "Avatar", "Titanic"};
+        movieDropdown = new JComboBox<>(movies);
+
+        add(label);
+        add(movieDropdown);
+
+        add(new JLabel("Number of Tickets:"));
+        ticketField = new JTextField(5);
+        add(ticketField);
+
+        bookButton = new JButton("Book Ticket");
+        bookButton.addActionListener(this);
+        add(bookButton);
+
+        deleteButton = new JButton("Delete Last Booking");
+        deleteButton.addActionListener(this);
+        add(deleteButton);
+
+        receiptArea = new JTextArea(10, 30);
+        receiptArea.setEditable(false);
+        add(new JScrollPane(receiptArea));
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == bookButton) {
+            String movie = (String) movieDropdown.getSelectedItem();
+            String tickets = ticketField.getText();
+
+            try {
+                int numTickets = Integer.parseInt(tickets);
+                if (numTickets <= 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid number of tickets.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                receiptArea.append("Movie: " + movie + "\nTickets: " + numTickets + "\nBooking Confirmed!\n----------------------\n");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (e.getSource() == deleteButton) {
+            String text = receiptArea.getText();
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No bookings to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Remove the last booking entry
+            int lastIndex = text.lastIndexOf("----------------------");
+            if (lastIndex != -1) {
+                receiptArea.setText(text.substring(0, lastIndex).trim());
+            } else {
+                receiptArea.setText("");
+            }
+        }
+    }
+}
