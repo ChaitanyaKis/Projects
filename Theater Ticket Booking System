@@ -72,7 +72,7 @@ class BookingUI extends JFrame implements ActionListener {
                 return;
             }
 
-            // Remove the last booking entry
+            
             int lastIndex = text.lastIndexOf("----------------------");
             if (lastIndex != -1) {
                 receiptArea.setText(text.substring(0, lastIndex).trim());
